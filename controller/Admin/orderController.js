@@ -30,7 +30,6 @@ const updateOrderStatus = async (req, res) => {
       const { orderId } = req.params;
       const { newStatus, itemId } = req.body;
   
-      console.log("New Status===>", newStatus);
   
       const order = await Order.findById(orderId).populate('order_items.product');
       if (!order) {
@@ -45,7 +44,6 @@ const updateOrderStatus = async (req, res) => {
         return res.status(404).json({ error: "Product not found in order" });
       }
   
-      console.log("Product===>", product);
   
       if (product.order_status === "cancelled") {
         return res.status(400).json({ error: "Cannot modify a cancelled order" });

@@ -28,5 +28,5 @@ app.use('/api/admin', adminrouter);
 
 app.listen(port, async () => {
   await connectDB();
-  console.log(`Server connected and listning to port ${port}`)
+  console.log(`Server connected at PORT ==> ${port}`)
 })

@@ -34,7 +34,6 @@ const getReferralCode = async (req, res) => {
 
 const getHasSeen = async (req, res) => {
     try {
-        // console.log("has seen calling ===============================================");
         const { userId } = req.params;
 
         if (!userId) {
@@ -157,7 +156,6 @@ const skipRefferalOffer = async (req, res) => {
     try {
 
         const userId = req.user;
-        console.log("skip ile user id--->", userId)
 
         const user = await User.findById(userId);
 

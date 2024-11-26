@@ -7,7 +7,7 @@ function genarateAccesTocken(res, admin) {
 
   res.cookie("accessToken", token, {
     httpOnly: true,
-    secure: false,
+    secure: process.env.NODE_ENV !== 'development',
     sameSite: "strict",
     maxAge: 1 * 60 * 1000,
   });
@@ -19,7 +19,7 @@ function genarateAccesTockenUser(res, user) {
 
   res.cookie("userAccessTocken", token, {
     httpOnly: true,
-    secure: false,
+    secure: process.env.NODE_ENV !== 'development',
     sameSite: "strict",
     maxAge: 1 * 60 * 1000,
   });

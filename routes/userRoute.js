@@ -16,6 +16,7 @@ const offerController = require('../controller/User/offerController')
 
 //Middleware for the Authorisation...
 const verifyUser = require('../middleware/userAuth')
+const checkUserBlocked = require('../middleware/CheckUserBlocked')
 
 
 //LOGIN AND SIGNUP ROUTES
@@ -34,10 +35,10 @@ router.post('/skip', verifyUser, offerController.skipRefferalOffer);
 
 
 //PROFILE BASRED ROUTES
-router.patch('/profile/:id', profileController.updateProfile);
-router.get('/user/:id', profileController.getUserData);
-router.post('/update_password', profileController.changePassword)
-router.post('/invoice', profileController.OrderInvoice);
+router.patch('/profile/:id', verifyUser, checkUserBlocked, profileController.updateProfile);
+router.get('/user/:id', verifyUser, profileController.getUserData);
+router.post('/update_password', verifyUser, checkUserBlocked, profileController.changePassword)
+router.post('/invoice', verifyUser, checkUserBlocked, profileController.OrderInvoice);
 
 //FORGOT PASSWORD RELATED ROUTES
 router.post('/reset', userController.sendOTPForPasswordReset)
@@ -61,11 +62,11 @@ router.get('/related/:id', verifyUser, productController.fetchRelatedProducts);
 router.get('/get_active_categories', verifyUser, categoryController.getActiveCategories);
 
 //ADDRESS ADD,DELETE,UPDATE,GET ROUTES...
-router.post('/addresses', verifyUser, address.userAddAddress);
+router.post('/addresses', verifyUser, checkUserBlocked, address.userAddAddress);
 router.get('/addresses/:userId', verifyUser, address.getUserAddresses);
-router.delete('/address/:addressId', verifyUser, address.deleteUserAddress);
+router.delete('/address/:addressId', verifyUser, checkUserBlocked, address.deleteUserAddress);
 router.get('/address/:id', verifyUser, address.getAddressById);
-router.patch('/addresses/:id', verifyUser, address.updateUserAddress);
+router.patch('/addresses/:id', verifyUser, checkUserBlocked, address.updateUserAddress);
 
 //CART RELATED ROUTES
 router.post('/add-to-cart', verifyUser, cartController.addToCart);
@@ -73,21 +74,21 @@ router.get('/get-cart-details', verifyUser, cartController.getCartDetails);
 router.get('/cart/:userId', verifyUser, cartController.getAllCartItems);
 router.get('/cartLength/:id', verifyUser, cartController.getUserCartProductCount);
 router.delete('/delete/:id/:pr_id', verifyUser, cartController.deleteItem);
-router.patch('/quantity/add/:userId/:itemId', verifyUser, cartController.incrementCartItemQuantity);
-router.patch('/quantity/min/:userId/:itemId', verifyUser, cartController.decrementCartItemQuantity);
+router.patch('/quantity/add/:userId/:itemId', verifyUser, checkUserBlocked, cartController.incrementCartItemQuantity);
+router.patch('/quantity/min/:userId/:itemId', verifyUser, checkUserBlocked, cartController.decrementCartItemQuantity);
 
 //ORDER RELATED ROUTES
 router.get('/items/:userId', verifyUser, orderController.getCheckoutCartItems);
-router.post('/order', verifyUser, orderController.createOrder);
+router.post('/order', verifyUser, checkUserBlocked, orderController.createOrder);
 router.get('/orders/:userId', verifyUser, orderController.getUserOrders);
 router.get('/order/:orderId', verifyUser, orderController.getOrderById);
 router.patch('/order/:orderId/cancel/:productId', verifyUser, orderController.cancelOrder);
 router.post('/order/:orderId/return/:productId', verifyUser, orderController.returnRequest)
 router.post('/order/retry', orderController.failedPaymet)
-router.post('/check-stock',orderController.checkStockAvailability);
+router.post('/check-stock', verifyUser, checkUserBlocked, orderController.checkStockAvailability);
 
 //WISHLIST RELATED ROUTES
-router.post('/wishlist/add', verifyUser, wishlistController.AddItemToWishlist);
+router.post('/wishlist/add', verifyUser, checkUserBlocked, wishlistController.AddItemToWishlist);
 router.post('/wishlist/remove', verifyUser, wishlistController.removeItemFromWishlist);
 router.get('/wishlist/:userId', verifyUser, wishlistController.getAllWishlistItems);
 router.get('/inwishlist', verifyUser, wishlistController.isInWishlist);
