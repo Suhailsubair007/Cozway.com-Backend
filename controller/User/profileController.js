@@ -293,15 +293,11 @@ const OrderInvoice = async (req, res) => {
                                 body: [
                                     [
                                         { text: 'Subtotal:', style: 'summaryLabel' },
-                                        { text: `${order.total_amount.toString()}`, style: 'summaryValue' }
+                                        { text: `${order.total_amount.toFixed(0)}`, style: 'summaryValue' }
                                     ],
                                     [
                                         { text: 'Shipping Fee:', style: 'summaryLabel' },
                                         { text: `${order.shipping_fee.toString()}`, style: 'summaryValue' }
-                                    ],
-                                    [
-                                        { text: 'Total Discount:', style: 'summaryLabel' },
-                                        { text: `${order.total_discount.toString()}`, style: 'summaryValue' }
                                     ],
                                     [
                                         { text: 'Coupon Discount:', style: 'summaryLabel' },
@@ -309,7 +305,7 @@ const OrderInvoice = async (req, res) => {
                                     ],
                                     [
                                         { text: 'Final Total:', style: 'summaryLabelBold' },
-                                        { text: `${order.total_price_with_discount.toString()}`, style: 'summaryValueBold' }
+                                        { text: `${order.total_price_with_discount.toFixed(0)}`, style: 'summaryValueBold' }
                                     ]
                                 ]
                             },
