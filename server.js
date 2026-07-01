@@ -10,9 +10,18 @@ const userrouter = require('./routes/userRoute')
 const adminrouter = require('./routes/adminRoute')
 
 
+const staticOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(",")
+  : ["http://localhost:5173"];
+
+const vercelPreviewPattern = /^https:\/\/cozway-[a-z0-9]+-suhailsubair007s-projects\.vercel\.app$/;
+
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin(origin, callback) {
+      const allowed = !origin || staticOrigins.includes(origin) || vercelPreviewPattern.test(origin);
+      callback(null, allowed);
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
