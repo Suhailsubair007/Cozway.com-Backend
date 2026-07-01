@@ -3,9 +3,17 @@ const bcrypt = require("bcrypt");
 const otpGenarator = require('otp-generator');
 const OTP = require('../../model/otpModel')
 const { OAuth2Client } = require('google-auth-library');
-// const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID); ('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const { genarateAccesTockenUser } = require('../../utils/genarateAccesTocken')
 const { genarateRefreshTockenUser } = require('../../utils/genarateRefreshTocken')
+
+const verifyGoogleToken = async (credential) => {
+    const ticket = await client.verifyIdToken({
+        idToken: credential,
+        audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    return ticket.getPayload();
+};
 
 
 
@@ -161,9 +169,9 @@ const sendOTPForPasswordReset = async (req, res) => {
 //Cntroller for google signup
 const googleSignIn = async (req, res) => {
 
-    const { email, name, sub: googleId } = req.body;
-
     try {
+        const { email, name, sub: googleId } = await verifyGoogleToken(req.body.credential);
+
         let user = await User.findOne({ email });
         if (!user) {
             user = new User({
@@ -189,16 +197,16 @@ const googleSignIn = async (req, res) => {
 
     } catch (error) {
         console.error('Error during Google sign-in:', error);
-        return res.status(500).json({ message: 'Failed to authenticate Google user' });
+        return res.status(401).json({ message: 'Invalid Google token' });
     }
 };
 
 
 //contorller for google login...
 const googleLoginUser = async (req, res) => {
-    const { email, name } = req.body;
-
     try {
+        const { email, name, sub: googleId } = await verifyGoogleToken(req.body.credential);
+
         let user = await User.findOne({ email });
 
         if (user && user.is_blocked) {
@@ -212,7 +220,7 @@ const googleLoginUser = async (req, res) => {
             user = new User({
                 email,
                 name,
-                googleId: req.body.sub,
+                googleId,
             });
             await user.save();
         }
