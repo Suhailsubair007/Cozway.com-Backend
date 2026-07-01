@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 require('dotenv').config()
 const cookieParser = require('cookie-parser');
+const mongoose = require('mongoose');
 const port = process.env.PORT || 8000;
 const connectDB = require('./config/dbConfig')
 const userrouter = require('./routes/userRoute')
@@ -22,6 +23,15 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
 app.use(cookieParser());
 
+
+app.get('/api/health', (req, res) => {
+  const dbStates = ['disconnected', 'connected', 'connecting', 'disconnecting'];
+  res.status(200).json({
+    status: 'ok',
+    db: dbStates[mongoose.connection.readyState],
+    uptime: process.uptime(),
+  });
+});
 
 app.use('/api/users', userrouter);
 app.use('/api/admin', adminrouter);
